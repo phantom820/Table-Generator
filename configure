@@ -1,0 +1,13 @@
+#!/bin/sh
+apt-get update
+apt-get install python3-pip -y 
+apt-get install libreoffice -y
+apt-get install libvips -y
+apt-get install default-jdk -y
+apt-get install texlive-latex-recommended -y
+apt-get install g++ -y
+apt-get install make -y
+apt-get install tralics -y
+apt-get update
+pip3 install --upgrade pip
+pip install -r requirements.txt

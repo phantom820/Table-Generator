@@ -1,0 +1,11 @@
+# ignore all images
+*.png
+
+# ignore all json
+*.json
+
+# all logs
+*.logs
+
+# igore everything in temp 
+temp/*
