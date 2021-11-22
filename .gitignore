@@ -9,3 +9,6 @@
 
 # igore everything in temp 
 temp/*
+
+# notebook checkpoints
+.ipynb_checkpoints
