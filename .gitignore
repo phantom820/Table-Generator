@@ -2,7 +2,7 @@
 *.png
 
 # ignore all json in data folder
-data/*.json
+data/*
 
 # all logs
 *.logs
