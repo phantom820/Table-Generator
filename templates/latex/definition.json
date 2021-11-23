@@ -1,0 +1,16 @@
+
+{
+	"sample_size":100,
+	"types":["0","1","2","3","4","5","6"],
+	"types_map":{"0":"Borderless",
+							 "1":"Bordered Header",
+							 "2":"Bordered Header Bottom",
+							 "3":"Bordered Internal Columns",
+							 "4":"Partially Bordered",
+							 "5":"Bordered",
+							 "6":"Embedded"
+							},
+	"img_path":"data/latex/imgs/",
+	"mask_path":"data/latex/masks/",
+	"annotation_path":"data/latex/annotations/"
+}

@@ -2,7 +2,6 @@
 *.png
 
 # ignore all json
-*.json
 
 # all logs
 *.logs

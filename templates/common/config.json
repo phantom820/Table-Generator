@@ -1,0 +1,14 @@
+{
+	"par_one":["This is the base template used for the table detection dataset. Tables provide a concise and systematic way of displaying and arrange data of interests. Although tables are easily identifiable", "and interpretable to humans this is not the case for machines. Typical examples of everyday data that is represented in tables includes invoices, receipts, medical records and so on."]
+	,
+	"par_two":["While human beings can read and interpret tables , doing this manually is a time consuming task and can be error prone. Automated table detection methods are preferred over manual processing of tables. In order to be able to develop automated table detection a high quality dataset is necessary that tries", 
+		"to cover the following variability of tables (borderless, partially bordered ...), source of tables (latex, word, html), format (scanned docs , embedded docs)."]
+	,
+	"par_three":["In order to develop automated ways of processing tabular data we essentially have to tack two problems which are respectively detecting tables in particular in put and identifying table structure to extract tabular information.",
+	"The above problems can be tackled by applying both digitial image processing techniques and deep learning based approaches."]
+	,
+	"par_four":["This is the closing remark of our random text. There are tables to be detected in this document. It would be great to detect all the tables.",
+	"Once a table has been detected how accurately we reconstruct the table will also depend on the underlting ocr engine we choose to use and any post proceesing steps"]
+
+
+}
