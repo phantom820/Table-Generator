@@ -1,9 +1,9 @@
 import cProfile
 import json
 from os import stat
-from word.pipeline import WordGeneratorPipeline
-from html.pipeline import HtmlGeneratorPipeline
-from latex.pipeline import LatexGeneratorPipeline
+from Word.pipeline import WordGeneratorPipeline
+from Html.pipeline import HtmlGeneratorPipeline
+from Latex.pipeline import LatexGeneratorPipeline
 import concurrent.futures
 import time
 import numpy as np
@@ -88,5 +88,4 @@ def main(config):
 if __name__=='__main__':
 	with open('config.json','r') as f:
 		config = json.load(f)
-	print(1)
 	main(dict(config))

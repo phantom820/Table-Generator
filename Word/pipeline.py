@@ -1,17 +1,13 @@
 from typing import List
-import numpy as np
-import cv2 as cv
-import json
 import itertools
-import cProfile
+import json
+import cv2 as cv
+import numpy as np
 import concurrent.futures
 
-from html.templator import TemplateGenerator
-from html.complex_templator import ComplexTemplateGenerator
-from html.table_generator import TableGenerator
-from html.table_writer import TableWriter
-from html.pdf_generator import PdfGenerator
-from html.structure_generator import StructureGenerator
+from Word.table_writer import TableWriter
+from Word.word_to_pdf import WordToPdf
+from Word.structure_generator import StructureGenerator
 import os, sys
 path = os.path.abspath('.')
 sys.path.insert(1, path)
@@ -22,76 +18,57 @@ from common.transformer import Transformer
 from common.labeler import Labeler
 
 
-class HtmlGeneratorPipeline:
+class WordGeneratorPipeline:
     def __init__(self,path):
-        self.data_source = DataSource(path)
-        self.templator = TemplateGenerator()
-        self.c_templator = ComplexTemplateGenerator()
-        self.table_generator = TableGenerator()
         self.table_writer = TableWriter()
-        self.pdf_generator = PdfGenerator()
+        self.word_to_pdf = WordToPdf()
         self.pdf_to_img = PdfToImg()
         self.mask_generator = MaskGenerator()
         self.transformer = Transformer()
         self.labeler = Labeler(StructureGenerator())
-        self.template_funcs = [
-            self.templator.borderless,
-            self.templator.bordered_header,
-            self.templator.bordered_header_bottom,
-            self.templator.bordered_internal_columns,
-            self.templator.striped_rows,
-            self.templator.partialy_bordered,
-            self.templator.bordered,
-            self.c_templator.embedded
-        ]
+        self.data_source = DataSource(path)
         
     ''' generate simple templates from given dfs and types'''
-    def templates(self,types:List[int])->List[str]:
+    def samples(self,types:List[int])->List[str]:
         n = len(types)
-        templates = []
         if n<3:
             sample = self.data_source.sample(n,0)
         else:
             sample = self.data_source.sample(n+1,0)
+        outer_samples = []
+        inner_samples = []
         for i in range(n):
             index = types[i]
-            if index!=7:
-                df = sample[i]
-                func = self.template_funcs[index]
-                template = func(df)
-                templates.append(template)
+            if index!=4:
+                outer_samples.append(sample[i])
+                inner_samples.append(None)
             else:
                 if n == 1:
                     df_outer,df_inner = self.data_source.sample(2,1)[:2]
+                elif n==2:
+                    df_outer,df_inner = self.data_source.sample(n,1)[:2]
                 else:
                     df_outer,df_inner = self.data_source.sample(n+1,1)[:2]
-                df_inner = df_inner.iloc[:len(df_outer)//2,:]
-                func = self.template_funcs[index]
-                func_inner = self.template_funcs[int(np.random.uniform(0,len(self.template_funcs)-1))]
-                template = func(df_outer,df_inner,func_inner)
-                templates.append(template)              
-        return templates
+                outer_samples.append(df_outer)
+                inner_samples.append(df_inner)
+        
+        return outer_samples,inner_samples
     
     ''' generate a single datapoint {mask,pdf,tables,img} '''
     def datum(self,types:List[int])->dict:
-        templates = self.templates(types)
+        outer_samples,inner_samples = self.samples(types)
         # step 1 pdf and outlined pdf
-        tables = self.table_generator.tables(templates)
-        outlined_tables = self.table_generator.outlined_tables(templates)
-        tex = self.table_writer.write(tables)
-        pdf = self.pdf_generator.pdf(tex)
-        outlined_table = self.table_writer.write(outlined_tables)
-        outlined_pdf = self.pdf_generator.pdf(outlined_table)        
-        
+        doc,outlined_doc = self.table_writer.write(types,outer_samples,inner_samples)
+        #outlined_doc = self.table_writer.write_outlined(types,outer_samples,inner_samples)
+        pdfs = self.word_to_pdf.docs_to_pdfs([doc])
+        outlined_pdfs = self.word_to_pdf.docs_to_pdfs([outlined_doc])
         # step 2 images and masks 
-        pdfs = [pdf]
-        outlined_pdfs = [outlined_pdf]
         imgs = self.pdf_to_img.pdfs_to_imgs(pdfs)
         outlined_imgs = self.pdf_to_img.pdfs_to_imgs(outlined_pdfs)
         masks = self.mask_generator.masks(imgs,outlined_imgs)
         
         # step 3 make results
-        results = {"mask":masks[0],"img":imgs[0],"pdf":pdfs[0],'tables':tables}
+        results = {"mask":masks[0],"img":imgs[0],"pdf":pdfs[0],'tables':doc.tables}
         
         return results
     
@@ -140,9 +117,8 @@ class HtmlGeneratorPipeline:
         with open(annotation_path,'w') as f:
             json.dump(annotation,f)
         
-    ''' generate dataset in parallel'''    
-    def generate_data_parallel(self,config):
-        
+    ''' generate dataset '''    
+    def generate_data(self,config):
         sample_size = config["sample_size"]
         types = config["types"]
         N = sample_size
@@ -150,30 +126,25 @@ class HtmlGeneratorPipeline:
         n = len(combinations)
         stats = {i:0 for i in types}
         _id = 0
-        batch_size = 5
-        with concurrent.futures.ThreadPoolExecutor(max_workers=batch_size) as executor:
-            for j in range(0,N,batch_size):
-                idx = (np.random.uniform(0,n,(batch_size)))
-                sub_types = [combinations[int(idx[k])] for k in range(0,batch_size)]
-                # for sub in sub_types:
-                #     for t in sub:
-                #         stats[t] = stats[t]+1
-                k = 0
-                for datum in (executor.map(self.datum,sub_types)):
-                    theta = np.random.uniform(-2,2)
-                    img,mask = self.distort_datum(datum,theta=theta)
-                    datum['img'] = img
-                    datum['mask'] = mask
-                    label = self.label(datum)
-                    label['types'] = sub_types[k]
-                    label["id"] = str(_id)                    
-                    _id = _id+1
-                    k = k+1
-                    self.save(datum,label,config)
+        for i in range(N):
+            idx = int(np.random.uniform(0,n))
+            sub_types = combinations[idx]
+            # for c in sub_types:
+            #     stats[c] = stats[c]+1
+            datum = self.datum(sub_types)
+            theta = np.random.uniform(-2,2)
+            img,mask = self.distort_datum(datum,theta=theta)
+            datum['img'] = img
+            datum['mask'] = mask
+            label = self.label(datum)
+            label['types'] = sub_types
+            label["id"] = str(_id)                    
+            _id =_id+1
+            self.save(datum,label,config)
         return _id,stats
 
-    ''' generate dataset serially'''    
-    def generate_data(self,config):
+    ''' generate dataset '''    
+    def generate_data_parallel(self,config):
         sample_size = config["sample_size"]
         types = config["types"]
         N = sample_size
@@ -196,4 +167,5 @@ class HtmlGeneratorPipeline:
             self.save(datum,label,config)
             _id =_id+1
         return _id,stats
+
 

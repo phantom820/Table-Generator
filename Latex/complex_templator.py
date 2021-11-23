@@ -1,5 +1,5 @@
 import numpy as np
-from latex.templator import TemplateGenerator
+from Latex.templator import TemplateGenerator
 
 # Complex Template Generator
 ''' Generate a table with a table in one of its columns. Results string representing the tabular in latex. 

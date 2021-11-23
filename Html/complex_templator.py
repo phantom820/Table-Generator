@@ -1,5 +1,5 @@
 import numpy as np
-from html.templator import TemplateGenerator
+from Html.templator import TemplateGenerator
 
 class ComplexTemplateGenerator(TemplateGenerator):
 

@@ -1,7 +1,8 @@
 # ignore all images
 *.png
 
-# ignore all json
+# ignore all json in data folder
+data/*.json
 
 # all logs
 *.logs
@@ -11,3 +12,10 @@ temp/*
 
 # notebook checkpoints
 .ipynb_checkpoints
+
+# all deb 
+*.deb
+
+# doc formats
+*.doc
+*.docx

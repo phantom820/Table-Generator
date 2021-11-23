@@ -6,12 +6,12 @@ import itertools
 import cProfile
 import concurrent.futures
 
-from latex.templator import TemplateGenerator
-from latex.complex_templator import ComplexTemplateGenerator
-from latex.table_generator import TableGenerator
-from latex.table_writer import TableWriter
-from latex.pdf_generator import PdfGenerator
-from latex.structure_generator import StructureGenerator
+from Html.templator import TemplateGenerator
+from Html.complex_templator import ComplexTemplateGenerator
+from Html.table_generator import TableGenerator
+from Html.table_writer import TableWriter
+from Html.pdf_generator import PdfGenerator
+from Html.structure_generator import StructureGenerator
 import os, sys
 path = os.path.abspath('.')
 sys.path.insert(1, path)
@@ -21,7 +21,8 @@ from common.mask_generator import MaskGenerator
 from common.transformer import Transformer
 from common.labeler import Labeler
 
-class LatexGeneratorPipeline:
+
+class HtmlGeneratorPipeline:
     def __init__(self,path):
         self.data_source = DataSource(path)
         self.templator = TemplateGenerator()
@@ -33,13 +34,12 @@ class LatexGeneratorPipeline:
         self.mask_generator = MaskGenerator()
         self.transformer = Transformer()
         self.labeler = Labeler(StructureGenerator())
-        
         self.template_funcs = [
             self.templator.borderless,
             self.templator.bordered_header,
             self.templator.bordered_header_bottom,
             self.templator.bordered_internal_columns,
-            self.templator.bordered_columns,
+            self.templator.striped_rows,
             self.templator.partialy_bordered,
             self.templator.bordered,
             self.c_templator.embedded
@@ -49,7 +49,10 @@ class LatexGeneratorPipeline:
     def templates(self,types:List[int])->List[str]:
         n = len(types)
         templates = []
-        sample = self.data_source.sample(n,0)
+        if n<3:
+            sample = self.data_source.sample(n,0)
+        else:
+            sample = self.data_source.sample(n+1,0)
         for i in range(n):
             index = types[i]
             if index!=7:
@@ -61,10 +64,10 @@ class LatexGeneratorPipeline:
                 if n == 1:
                     df_outer,df_inner = self.data_source.sample(2,1)[:2]
                 else:
-                    df_outer,df_inner = self.data_source.sample(n,1)[:2]
+                    df_outer,df_inner = self.data_source.sample(n+1,1)[:2]
                 df_inner = df_inner.iloc[:len(df_outer)//2,:]
                 func = self.template_funcs[index]
-                func_inner = self.template_funcs[np.random.randint(0,7)]
+                func_inner = self.template_funcs[int(np.random.uniform(0,len(self.template_funcs)-1))]
                 template = func(df_outer,df_inner,func_inner)
                 templates.append(template)              
         return templates
@@ -139,6 +142,7 @@ class LatexGeneratorPipeline:
         
     ''' generate dataset in parallel'''    
     def generate_data_parallel(self,config):
+        
         sample_size = config["sample_size"]
         types = config["types"]
         N = sample_size
@@ -154,7 +158,8 @@ class LatexGeneratorPipeline:
                 # for sub in sub_types:
                 #     for t in sub:
                 #         stats[t] = stats[t]+1
-                for k,datum in enumerate(executor.map(self.datum,sub_types)):
+                k = 0
+                for datum in (executor.map(self.datum,sub_types)):
                     theta = np.random.uniform(-2,2)
                     img,mask = self.distort_datum(datum,theta=theta)
                     datum['img'] = img
@@ -191,6 +196,4 @@ class LatexGeneratorPipeline:
             self.save(datum,label,config)
             _id =_id+1
         return _id,stats
-
-        
 
