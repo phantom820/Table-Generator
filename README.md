@@ -13,14 +13,13 @@ were taken into consideration. Follow steps below to generate a dataset
 
 
 ### Dependencies 
-
 First install all the required components by running the following (I know a Docker Image would be better working on it).
 
 ```
 ./configure.sh # note run as sudo
 ./setup.sh 
 pipenv install # note if using pipenv (recommended)
-pip install -r requirements.txt # not if not using pipenv
+pip install -r requirements.txt # not if not using pipenv/ 
 ```
 ### Output Description
 Each data point produces has three things, the actual image,  a mask image and an annotation.
@@ -39,7 +38,7 @@ This a description of important parameters that are specified in the ```config.j
 
 ### Running
 Run the main script i.e
-``` python main.py ```
+``` python main.py ``` note if pipenv was used ```pipenv run python main.py```
 
 ### Benchmarks
 An experiment was done in which the resulting dataset was as follows. We employed a machine with the
