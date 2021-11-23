@@ -22,3 +22,6 @@ temp/*
 
 # pycahce
 */__pycache__/*
+
+# profiling stuff
+profiles/*
