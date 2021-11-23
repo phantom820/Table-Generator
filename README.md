@@ -40,3 +40,18 @@ This a description of important parameters that are specified in the ```config.j
 ### Running
 Run the main script i.e
 ``` python main.py ```
+
+### Benchmarks
+An experiment was done in which the resulting dataset was as follows. We employed a machine with the
+following specs to run the code:
+* OS name : Ubuntu 20.04.3 LTS.
+* Processor : Intel® Core™ i7-8750H CPU @ 2.20GHz × 12
+* Memory: 15.5 GiB
+
+| First Header  | Latex | Html | Word |
+| ------------- | ------------- | -------| --- |
+| Image Dimension  | 1700 × 2200 × 3   | 1653 × 2339 × 3 | 1700 × 2200 × 3 |
+| Image Count  | 10 000  | 10 000 | 10 000 |
+| Table Count  | 25 210  | 25 276 | 21 854 |
+| Size  | 11.5 GB   | 14.2 GB | 13.8 GB |
+| Time  | 2.35 hrs   | 1.5 hrs GB | 1.15 hrs |
