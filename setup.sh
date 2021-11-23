@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# install python libraries
+pipenv install
+
 # setup directories
 mkdir -p temp
 mkdir -p data/latex/imgs
@@ -13,3 +16,5 @@ mkdir -p data/html/annotations
 mkdir -p data/word/imgs
 mkdir -p data/word/masks
 mkdir -p data/word/annotations
+
+mkdir -p profiles

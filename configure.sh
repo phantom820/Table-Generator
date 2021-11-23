@@ -15,5 +15,5 @@ dpkg -i wkhtmltox_0.12.5-1.bionic_amd64.deb
 apt-get install wkhtmltopdf -y
 
 # install python libraries
-pipenv install -r requirements.txt
+pipenv install
 
