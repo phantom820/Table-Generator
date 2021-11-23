@@ -19,3 +19,6 @@ temp/*
 # doc formats
 *.doc
 *.docx
+
+# pycahce
+*/__pycache__/*

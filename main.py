@@ -73,7 +73,6 @@ def main(config):
 
 	serial_funcs = [latex_pipeline.generate_data,html_pipeline.generate_data,word_pipeline.generate_data]
 	parallel_funcs = ['latex','html','word']
-	parallel = False
 	if parallel:
 		print('Parallel generation')
 		config['path'] = path

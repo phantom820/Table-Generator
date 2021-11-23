@@ -6,7 +6,6 @@ mkdir -p data/latex/img
 mkdir -p data/latex/masks
 mkdir -p data/latex/annotations
 
-mkdir temp
 mkdir -p data/html/img
 mkdir -p data/html/masks
 mkdir -p data/html/annotations
