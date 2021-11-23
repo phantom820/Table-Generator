@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # install python libraries
-pipenv install
+# pipenv install
 
 # setup directories
 mkdir -p temp
