@@ -129,7 +129,6 @@ class LatexGeneratorPipeline:
         # save img and mask
         img = datum['img']
         mask = datum['mask']
-        
         cv.imwrite(img_path,img)
         cv.imwrite(mask_path,mask)
         

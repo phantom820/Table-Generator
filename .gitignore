@@ -25,3 +25,6 @@ temp/*
 
 # profiling stuff
 profiles/*
+
+# all pdf
+*.pdf
