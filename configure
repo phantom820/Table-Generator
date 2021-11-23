@@ -10,4 +10,6 @@ apt-get install make -y
 apt-get install tralics -y
 apt-get update
 pip3 install --upgrade pip
-pip install -r requirements.txt
+pipenv install -r requirements.txt
+
+# setup dir structure
