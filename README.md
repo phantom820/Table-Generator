@@ -55,3 +55,4 @@ following specs to run the code:
 | Table Count  | 25 210  | 25 276 | 21 854 |
 | Size  | 11.5 GB   | 14.2 GB | 13.8 GB |
 | Time  | 2.35 hrs   | 1.5 hrs GB | 1.15 hrs |
+The total run time for generating was 5 hrs and total storage was 40 GB.
