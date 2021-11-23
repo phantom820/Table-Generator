@@ -13,13 +13,13 @@ were taken into consideration. Follow steps below to generate a dataset
 
 
 ### Dependencies 
-First install all the required components by running the following (I know a Docker Image would be better working on it).
+First install all the required components by running the following (I know a Docker Image would be better working on it). (Note you must have python 3.8 or later)
 
 ```
 ./configure.sh # note run as sudo
 ./setup.sh 
 pipenv install # note if using pipenv (recommended)
-pip install -r requirements.txt # not if not using pipenv/ 
+pip install -r requirements.txt # note if not using pipenv to install libraries 
 ```
 ### Output Description
 Each data point produces has three things, the actual image,  a mask image and an annotation.
